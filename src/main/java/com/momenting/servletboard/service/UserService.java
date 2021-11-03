@@ -8,7 +8,7 @@ import com.momenting.servletboard.domain.user.dto.UpdateReqDto;
 public class UserService {
 	//회원 가입, 회원수정, 로그인, 로그아웃, 아이디 중복체크 
 	
-	public int Join(JoinReqDto dto) {
+	public int join(JoinReqDto dto) {
 		
 		return -1;
 	}
@@ -18,11 +18,11 @@ public class UserService {
 		return null;
 	}
 	 
-	public int UpdateUserInfo(UpdateReqDto dto) {
+	public int updateUserInfo(UpdateReqDto dto) {
 		return -1;
 	}
 	
-	public int DuplicateId(String username) {
+	public int checkUsername(String username) {
 		return -1;
 	}
 	

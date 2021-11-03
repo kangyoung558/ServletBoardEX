@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.momenting.servletboard.domain.user.dto.JoinReqDto;
+import com.momenting.servletboard.domain.user.dto.LoginReqDto;
+import com.momenting.servletboard.service.UserService;
+
 //http://localhost:8080/servletbord
 @WebServlet("/user")
 public class UserController extends HttpServlet {
@@ -25,7 +29,39 @@ public class UserController extends HttpServlet {
 	}
 	
 	protected void doProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		String cmd = request.getParameter("cmd");
+		UserService userService = new UserService();
+		if(cmd.equals("loginForm")) {
+			response.sendRedirect("user/loginForm.jsp");
+		}else if (cmd.equals("login")) {
+			
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			
+			LoginReqDto dto = new LoginReqDto();
+			
+			dto.setUsername(username);
+			dto.setPassword(password);
+			
+			userService.login(dto);
+			
+		}else if (cmd.equals("joinForm")) {
+			response.sendRedirect("user/joinForm.jsp");
+		}else if (cmd.equals("join")) {
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			String email = request.getParameter("email");
+			String address = request.getParameter("address");
+			
+			JoinReqDto dto = new JoinReqDto();
+			
+			dto.setUsername(username);
+			dto.setPassword(password);
+			dto.setEmail(email);
+			dto.setAddress(address);
+			
+			userService.join(dto);
+		}
 	}
 
 }
