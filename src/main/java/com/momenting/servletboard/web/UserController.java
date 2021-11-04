@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.momenting.servletboard.domain.user.dto.JoinReqDto;
 import com.momenting.servletboard.domain.user.dto.LoginReqDto;
 import com.momenting.servletboard.service.UserService;
+import com.momenting.servletboard.util.Script;
 
 //http://localhost:8080/servletbord
 @WebServlet("/user")
@@ -59,8 +60,13 @@ public class UserController extends HttpServlet {
 			dto.setPassword(password);
 			dto.setEmail(email);
 			dto.setAddress(address);
-			
-			userService.join(dto);
+			System.out.println("회원가입 : " + dto);
+			int result = userService.join(dto);
+			if(result==1) {
+				response.sendRedirect("index.jsp");
+			} else {
+				Script.back(response, "회원가입 실패");
+			}
 		}
 	}
 
