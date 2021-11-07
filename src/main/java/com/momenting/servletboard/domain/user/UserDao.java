@@ -2,6 +2,7 @@ package com.momenting.servletboard.domain.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.momenting.servletboard.config.DBConn;
 import com.momenting.servletboard.domain.user.dto.JoinReqDto;
@@ -12,7 +13,7 @@ public class UserDao {
 		String sql = "insert into user(username, password, email, address, user_role, created_date) values(?,?,?,?,'USER',now())";
 		Connection conn = DBConn.getConnection();
 		PreparedStatement pstmt = null;
-		int result = 0;
+		int result = -1;
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, dto.getUsername());
@@ -35,8 +36,27 @@ public class UserDao {
 		
 	}
 	
-	public void checkUsername() {
-
+	public int checkUsername(String username) {
+		String sql = "select username from user where username=?";
+		Connection conn = DBConn.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				return 1;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConn.close(conn, pstmt, rs);
+		}
+		
+		return -1;
 	}
 	
 	public void findById() {

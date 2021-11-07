@@ -29,7 +29,8 @@ public class UserService {
 	}
 	
 	public int checkUsername(String username) {
-		return -1;
+		int result = userDao.checkUsername(username);
+		return result;
 	}
 	
 }

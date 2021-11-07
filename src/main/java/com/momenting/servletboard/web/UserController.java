@@ -1,6 +1,9 @@
 package com.momenting.servletboard.web;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,9 +49,9 @@ public class UserController extends HttpServlet {
 			
 			userService.login(dto);
 			
-		}else if (cmd.equals("joinForm")) {
+		}else if(cmd.equals("joinForm")) {
 			response.sendRedirect("user/joinForm.jsp");
-		}else if (cmd.equals("join")) {
+		}else if(cmd.equals("join")) {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 			String email = request.getParameter("email");
@@ -67,6 +70,18 @@ public class UserController extends HttpServlet {
 			} else {
 				Script.back(response, "회원가입 실패");
 			}
+			
+		}else if(cmd.equals("checkUsername")) {
+			BufferedReader br = request.getReader();
+			String username = br.readLine();
+			int result =  userService.checkUsername(username);
+			PrintWriter out = response.getWriter();
+			if(result == 1) {
+				out.print("ok");
+			}else {
+				out.print("fail");
+			}
+			out.flush();
 		}
 	}
 
