@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 import com.momenting.servletboard.config.DBConn;
 import com.momenting.servletboard.domain.user.dto.JoinReqDto;
+import com.momenting.servletboard.domain.user.dto.LoginReqDto;
 
 public class UserDao {
 	
@@ -57,6 +58,38 @@ public class UserDao {
 		}
 		
 		return -1;
+	}
+	
+	public User findByUsernameAndPassword(LoginReqDto dto) {
+		
+		String sql = "select id, username, email, address from user where username=? and password=?";
+		Connection conn = DBConn.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getUsername());
+			pstmt.setString(2, dto.getPassword());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				User user = User.builder()
+						.id(rs.getLong("id"))
+						.username(rs.getString("username"))
+						.email(rs.getString("email"))
+						.address(rs.getString("address"))
+						.build();
+				return user;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBConn.close(conn, pstmt, rs);
+		}
+		
+		return null;
 	}
 	
 	public void findById() {

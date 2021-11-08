@@ -9,7 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.momenting.servletboard.domain.user.User;
 import com.momenting.servletboard.domain.user.dto.JoinReqDto;
 import com.momenting.servletboard.domain.user.dto.LoginReqDto;
 import com.momenting.servletboard.service.UserService;
@@ -47,10 +49,18 @@ public class UserController extends HttpServlet {
 			dto.setUsername(username);
 			dto.setPassword(password);
 			
-			userService.login(dto);
+			User userEntity = userService.login(dto);
+			if(userEntity != null) {
+				HttpSession session = request.getSession();
+				session.setAttribute("principal", userEntity);
+				response.sendRedirect("index.jsp");
+			}else {
+				Script.back(response, "로그인 실패");
+			}
 			
 		}else if(cmd.equals("joinForm")) {
 			response.sendRedirect("user/joinForm.jsp");
+			
 		}else if(cmd.equals("join")) {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
@@ -82,6 +92,10 @@ public class UserController extends HttpServlet {
 				out.print("fail");
 			}
 			out.flush();
+		}else if(cmd.equals("logout")) {
+			HttpSession session = request.getSession();
+			session.invalidate();
+			response.sendRedirect("user/loginForm.jsp");
 		}
 	}
 

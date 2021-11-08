@@ -20,8 +20,7 @@ public class UserService {
 	}
 	
 	public User login(LoginReqDto dto) {
-		
-		return null;
+		return userDao.findByUsernameAndPassword(dto);
 	}
 	 
 	public int updateUserInfo(UpdateReqDto dto) {
