@@ -3,7 +3,7 @@
 <%@ include file= "../layout/header.jsp" %>
 
 <div class="container">
-
+	<h1> ${sessionScope}</h1>
 	<div class="m-2">
 		<form class="form-inline d-flex justify-content-end" action="<%=request.getContextPath()%>/board">
 			<input type="hidden" name="cmd" value="search" />
