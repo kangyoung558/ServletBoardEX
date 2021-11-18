@@ -31,7 +31,7 @@
 		    		<div class="row mb-3">
 			    		<div class="col-sm">
 						    <div class="form-floating">
-						      <input type="text" class="form-control" id="password" placeholder="비밀번호를 입력해주세요" name="password">
+						      <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력해주세요" name="password">
 						      <label for="password">비밀번호</label>
 						    </div>
 			    		</div>

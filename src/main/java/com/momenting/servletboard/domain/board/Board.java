@@ -13,9 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Board {
 	private Long id;
-	private Long userid;
+	private Long userId;
 	private String title;
 	private String content;
 	private Long readCount; //조회수 default = 0
 	private Timestamp createdDate;
+	
+	public String getTitle() {
+		return title.replaceAll("<", "&lt;").replaceAll(">", "&gt");
+	}
 }

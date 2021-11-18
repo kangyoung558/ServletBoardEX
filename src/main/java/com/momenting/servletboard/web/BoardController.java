@@ -1,6 +1,9 @@
 package com.momenting.servletboard.web;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,13 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.momenting.servletboard.domain.board.Board;
 import com.momenting.servletboard.domain.board.dto.SaveReqDto;
 import com.momenting.servletboard.domain.user.User;
 import com.momenting.servletboard.service.BoardService;
-import com.momenting.servletboard.service.UserService;
 import com.momenting.servletboard.util.Script;
 
-import lombok.RequiredArgsConstructor;
 
 //http://localhost:8080/servletbord
 @WebServlet("/board")
@@ -41,9 +43,11 @@ public class BoardController extends HttpServlet {
 		if(cmd.equals("saveForm")) {
 			User principal = (User)session.getAttribute("principal");
 			if(principal != null) {
-				response.sendRedirect("board/saveForm.jsp");
+				RequestDispatcher dispatcher = request.getRequestDispatcher("board/saveForm.jsp");
+				dispatcher.forward(request, response);
 			}else {
-				response.sendRedirect("user/loginForm.jsp");
+				RequestDispatcher dispatcher = request.getRequestDispatcher("user/loginForm.jsp");
+				dispatcher.forward(request, response);
 			}
 		}else if(cmd.equals("save")) {
 			Long userid = Long.parseLong(request.getParameter("userid"));
@@ -62,6 +66,21 @@ public class BoardController extends HttpServlet {
 			}else {
 				Script.back(response, "글쓰기 실패");
 			}
+		}else if(cmd.equals("list")) {
+			int page = Integer.parseInt(request.getParameter("page")); 
+			List<Board> boards = boardService.list(page);
+			request.setAttribute("boards", boards);
+			
+			int boardCount = boardService.boardCount();
+			int lastPage = (boardCount-1)/4;  
+			double currentPosition = (double)page/(lastPage)*100;
+			
+			request.setAttribute("lastPage", lastPage);
+			request.setAttribute("currentPosition", currentPosition);
+			
+			RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("board/list.jsp");
+				requestDispatcher.forward(request, response);
 		}
 	}
 	

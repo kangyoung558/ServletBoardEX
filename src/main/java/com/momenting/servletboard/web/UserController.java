@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +39,9 @@ public class UserController extends HttpServlet {
 		String cmd = request.getParameter("cmd");
 		UserService userService = new UserService();
 		if(cmd.equals("loginForm")) {
-			response.sendRedirect("user/loginForm.jsp");
+			RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("user/loginForm.jsp");
+				requestDispatcher.forward(request, response);
 		}else if (cmd.equals("login")) {
 			
 			String username = request.getParameter("username");
@@ -59,7 +62,9 @@ public class UserController extends HttpServlet {
 			}
 			
 		}else if(cmd.equals("joinForm")) {
-			response.sendRedirect("user/joinForm.jsp");
+			RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("user/loginForm.jsp");
+				requestDispatcher.forward(request, response);
 			
 		}else if(cmd.equals("join")) {
 			String username = request.getParameter("username");
@@ -76,7 +81,9 @@ public class UserController extends HttpServlet {
 			System.out.println("회원가입 : " + dto);
 			int result = userService.join(dto);
 			if(result==1) {
-				response.sendRedirect("index.jsp");
+				RequestDispatcher requestDispatcher =
+						request.getRequestDispatcher("index.jsp");
+					requestDispatcher.forward(request, response);
 			} else {
 				Script.back(response, "회원가입 실패");
 			}
@@ -95,7 +102,9 @@ public class UserController extends HttpServlet {
 		}else if(cmd.equals("logout")) {
 			HttpSession session = request.getSession();
 			session.invalidate();
-			response.sendRedirect("user/loginForm.jsp");
+			RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("user/loginForm.jsp");
+				requestDispatcher.forward(request, response);
 		}
 	}
 
