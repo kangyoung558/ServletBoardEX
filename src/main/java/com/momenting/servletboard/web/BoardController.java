@@ -1,6 +1,8 @@
 package com.momenting.servletboard.web;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -11,8 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import com.momenting.servletboard.domain.board.Board;
+import com.momenting.servletboard.domain.board.dto.DeleteReqDto;
+import com.momenting.servletboard.domain.board.dto.DeleteResDto;
+import com.momenting.servletboard.domain.board.dto.DetailResDto;
 import com.momenting.servletboard.domain.board.dto.SaveReqDto;
+import com.momenting.servletboard.domain.board.dto.UpdateReqDto;
 import com.momenting.servletboard.domain.user.User;
 import com.momenting.servletboard.service.BoardService;
 import com.momenting.servletboard.util.Script;
@@ -81,7 +88,67 @@ public class BoardController extends HttpServlet {
 			RequestDispatcher requestDispatcher =
 					request.getRequestDispatcher("board/list.jsp");
 				requestDispatcher.forward(request, response);
+		}else if (cmd.equals("detail")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			DetailResDto dto = boardService.detail(id); //board테이블 + user테이블 = 조인된 데이터!!
+			if(dto == null) {
+				Script.back(response, "상세보기에 실패 하였습니다.");
+			}else {
+				request.setAttribute("dto", dto);
+				//System.out.println("DetailResDto : " + dto);
+				RequestDispatcher requestDispatcher =
+						request.getRequestDispatcher("board/detail.jsp");
+				requestDispatcher.forward(request, response);
+			}
+			
+		}else if(cmd.equals("delete")) {
+			BufferedReader br = request.getReader();
+			String data = br.readLine();
+			
+			Gson gson = new Gson();
+			DeleteReqDto dto = gson.fromJson(data, DeleteReqDto.class);
+			
+			int result = boardService.delete(dto.getBoardId());
+			DeleteResDto resDto = new DeleteResDto();
+			if(result == 1) {
+				resDto.setStatus("ok");
+			}else {
+				resDto.setStatus("fail");
+			}
+			String resData = gson.toJson(resDto);
+			PrintWriter out = response.getWriter();
+			out.print(resData);
+			out.flush();
+			
+		}else if (cmd.equals("updateForm")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			DetailResDto dto = boardService.detail(id);
+			
+			request.setAttribute("dto", dto);
+			
+			RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("board/updateForm.jsp");
+			requestDispatcher.forward(request, response);
+		}else if (cmd.equals("update")) {
+			Long id = Long.parseLong(request.getParameter("id"));
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			
+			UpdateReqDto dto = new UpdateReqDto();
+			
+			dto.setId(id);
+			dto.setTitle(title);
+			dto.setContent(content);
+			
+			int result = boardService.update(dto);
+			
+			if(result == 1) {
+				response.sendRedirect("/servletboard/board?cmd=detail&id="+id);
+			}else {
+				Script.back(response, "글 수정에 실패하였습니다.");
+			}
 		}
+		
 	}
 	
 }

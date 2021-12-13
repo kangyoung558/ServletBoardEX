@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.momenting.servletboard.domain.board.Board;
 import com.momenting.servletboard.domain.board.BoardDao;
+import com.momenting.servletboard.domain.board.dto.DetailResDto;
 import com.momenting.servletboard.domain.board.dto.SaveReqDto;
+import com.momenting.servletboard.domain.board.dto.UpdateReqDto;
 
 public class BoardService {
 	
@@ -24,5 +26,22 @@ public class BoardService {
 	
 	public int boardCount() {
 		return boardDao.count();
+	}
+	
+	public DetailResDto detail(int id) {
+		int result = boardDao.updateReadCount(id);
+		if(result == 1) {
+			return boardDao.findById(id);
+		}else {
+			return null;
+		}
+	}
+	
+	public int delete(Long id) {
+		return boardDao.deleteById(id);
+	}
+	
+	public int update(UpdateReqDto dto) {
+		return boardDao.update(dto);
 	}
 }
