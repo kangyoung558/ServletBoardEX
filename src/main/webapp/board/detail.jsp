@@ -30,16 +30,14 @@
 						<b>Comment</b>
 					</div>
 					<div class="panel-body">
-						<input type="hidden" name="userId"
-							value="" /> <input type="hidden"
-							name="boardId" value="" />
-						<textarea id="content" id="reply__write__form"
-							class="form-control" placeholder="write a comment..." rows="2"></textarea>
-						<br>
-
-						<button
-							onClick="replySave()"
-							class="btn btn-primary pull-right">댓글쓰기</button>
+						<form action="<%=request.getContextPath()%>/reply?cmd=save" method="post">
+							<input type="hidden" name="userId" value="${sessionScope.principal.id}" /> 
+							<input type="hidden" name="boardId" value="${dto.id}" />
+							<textarea id="content" name="content" class="form-control" placeholder="write a comment..." rows="2"></textarea>
+							<br>
+	
+							<button	onClick="replySave()" class="btn btn-primary pull-right">댓글쓰기</button>
+						</form>
 
 						<div class="clearfix"></div>
 						<hr />
@@ -69,17 +67,12 @@
 
 <script>
 	function deleteById(boardId) {
-		var data = {
-			boardId: boardId
-		}
 		$.ajax({
 			type: "post",
-			url: "/servletboard/board?cmd=delete",
-			data: JSON.stringify(data),
-			contentType:"application/json; charset=utf-8",
+			url: "/servletboard/board?cmd=delete&id="+boardId,
 			dataType: "json"
 		}).done(function(result) {
-			if(result.status == "ok") {
+			if(result.statusCode == 1) {
 				location.href="index.jsp";
 			}else {
 				alert("삭제에 실패하였습니다.");

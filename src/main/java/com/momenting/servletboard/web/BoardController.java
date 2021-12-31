@@ -15,8 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.momenting.servletboard.domain.board.Board;
-import com.momenting.servletboard.domain.board.dto.DeleteReqDto;
-import com.momenting.servletboard.domain.board.dto.DeleteResDto;
+import com.momenting.servletboard.domain.board.dto.CommonResDto;
 import com.momenting.servletboard.domain.board.dto.DetailResDto;
 import com.momenting.servletboard.domain.board.dto.SaveReqDto;
 import com.momenting.servletboard.domain.board.dto.UpdateReqDto;
@@ -102,20 +101,18 @@ public class BoardController extends HttpServlet {
 			}
 			
 		}else if(cmd.equals("delete")) {
-			BufferedReader br = request.getReader();
-			String data = br.readLine();
+			
+			Long id = Long.parseLong(request.getParameter("id"));
+			
+			
+			int result = boardService.delete(id);
+			
+			CommonResDto<String> commonResDto = new CommonResDto<>();
+			commonResDto.setStatusCode(result);
 			
 			Gson gson = new Gson();
-			DeleteReqDto dto = gson.fromJson(data, DeleteReqDto.class);
 			
-			int result = boardService.delete(dto.getBoardId());
-			DeleteResDto resDto = new DeleteResDto();
-			if(result == 1) {
-				resDto.setStatus("ok");
-			}else {
-				resDto.setStatus("fail");
-			}
-			String resData = gson.toJson(resDto);
+			String resData = gson.toJson(commonResDto);
 			PrintWriter out = response.getWriter();
 			out.print(resData);
 			out.flush();
